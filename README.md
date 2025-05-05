@@ -36,6 +36,17 @@ Esto levantará el servidor en:
 Se debería de visualizar de ésta manera
 ![foto](./img/resultado.png)
 
+## Ejecución de tests
+Ejecuta este comando en tu entorno:
+
+```bash
+pip install -U "werkzeug>=2.2.0,<2.3.0"
+```
+
+Despues ejecutar python test.py
+
+---
+
 ## 📌 Especificación del Esquema
 
 ### 📍 Consulta (Query)
