@@ -16,9 +16,9 @@ Este proyecto implementa un backend en Flask usando GraphQL para gestionar el in
 1. Clona este repositorio o copia los archivos del proyecto.
 2. Instala las dependencias:
 
-
+```bash
 pip install -r requirements.txt
-
+```
 
 
 
@@ -26,9 +26,9 @@ pip install -r requirements.txt
 
 Para iniciar el servidor, ejecuta:
 
-
+```bash
 python app.py
-
+```
 
 Esto levantará el servidor en:  
 👉 `http://127.0.0.1:5000/graphql`
@@ -43,7 +43,10 @@ Ejecuta este comando en tu entorno:
 pip install -U "werkzeug>=2.2.0,<2.3.0"
 ```
 
-Despues ejecutar python test.py
+Despues ejecutar 
+```bash
+python test.py
+```
 
 ---
 
@@ -91,8 +94,9 @@ mutation {
 ## 🧪 Probar la API
 
 Puedes probar directamente desde la interfaz GraphiQL que se abre en:  
+```bash
 `http://localhost:5000/graphql`
-
+```
 
 
 ## 📁 Estructura del proyecto
