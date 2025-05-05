@@ -1,41 +1,62 @@
-from flask import Flask
+from flask import Flask, request, jsonify
+from graphene import ObjectType, String, Schema, Int, Boolean, Field, List, Mutation
 from flask_graphql import GraphQLView
-from graphene import ObjectType, String, Schema, Int, Field, List, Mutation
+from models import guitars  # Importar datos desde models.py
 
-items = []
-
-class ItemType(ObjectType):
+class GuitarType(ObjectType):
     id = Int()
     name = String()
+    image = String()
     description = String()
+    price = Int()
+    stock = Int()
+    available = Boolean()
 
 class Query(ObjectType):
-    items = List(ItemType)
-    item = Field(ItemType, id=Int())
+    guitars = List(GuitarType)
+    guitar = Field(GuitarType, id=Int(required=True))
 
-    def resolve_items(root, info):
-        return items
+    def resolve_guitars(root, info):
+        return guitars
 
-    def resolve_item(root, info, id):
-        return next((i for i in items if i['id'] == id), None)
+    def resolve_guitar(root, info, id):
+        return next((g for g in guitars if g["id"] == id), None)
 
-class CreateItem(Mutation):
+
+class UpdateStock(Mutation):
     class Arguments:
-        name = String()
-        description = String()
+        id = Int(required=True)
+        quantity = Int(required=True)
 
-    item = Field(lambda: ItemType)
+    guitar = Field(lambda: GuitarType)
 
-    def mutate(self, info, name, description):
-        item = {'id': len(items)+1, 'name': name, 'description': description}
-        items.append(item)
-        return CreateItem(item=item)
+    def mutate(self, info, id, quantity):
+        guitar = next((g for g in guitars if g["id"] == id), None)
+        if guitar:
+            guitar["stock"] = max(guitar["stock"] - quantity, 0)
+            guitar["available"] = guitar["stock"] > 0
+            return UpdateStock(guitar=guitar)
+        return UpdateStock(guitar=None)
+
 
 class Mutation(ObjectType):
-    create_item = CreateItem.Field()
+    update_stock = UpdateStock.Field()
+
 
 schema = Schema(query=Query, mutation=Mutation)
 
+
 app = Flask(__name__)
-app.add_url_rule('/graphql', view_func=GraphQLView.as_view(
-    'graphql', schema=schema, graphiql=True))
+
+app.add_url_rule(
+    '/graphql',
+    view_func=GraphQLView.as_view(
+        'graphql',
+        schema=schema,
+        graphiql=True  # Esto habilita la interfaz visual
+    )
+)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
